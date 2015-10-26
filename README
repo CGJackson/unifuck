@@ -1,0 +1,3 @@
+An interpreter for 'synonyms' for the brainfuck language. By a synonym we mean languages whos keywords map have identical meanings.
+
+Examples of synonyms for brainfuck are Ook! Blub and COW
