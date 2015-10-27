@@ -33,21 +33,22 @@ public:
     void run(std::istream &);
     void run(std::string);
     void live_run();
-    void reset_data();
 private:
-    std::istream &input_stream = std::cin;
+    std::istream &input_stream;
     std::ostream &output_stream = std::cout;
 
     std::map<std::string, instruction> keywords;
     _clusterfuck_internals::data_cells program_data;
     _clusterfuck_internals::data_cells::iterator data_pointer;
+
+    void reset_data();
     
     inline void null_instruction();
     inline void increment_pointer();
     inline void decrement_pointer();
     inline void increment_data();
     inline void decrement_data();
-    inline void output_data() const;
+    inline void output_data();
     inline void input_data();
     inline void jump_forward(_clusterfuck_internals::code_point&,
                         const _clusterfuck_internals::code_point&) const;

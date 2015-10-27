@@ -19,7 +19,8 @@ using std::list;        using std::find;
 using std::regex;       using std::sregex_iterator;
 using std::cin;         using std::cout;
 using std::getline;     using std::istream;
-using std::ostream;
+using std::ostream;     using std::flush;
+using std::endl;
 
 
 // Takes a string and adds escapes to regex special characters, so that it
@@ -57,10 +58,13 @@ regex generate_key_regex(const map<string, mapped_type> &key_map){
 }
 
 
-interpreter::interpreter(map<string,instruction> keywords, 
-                                istream &input_stream = cin,
-                                ostream &output_stream = cout)
-                                : program_data(1),
+interpreter::interpreter(map<string,instruction> language_specs, 
+                                istream &i_stream,
+                                ostream &o_stream): 
+                                input_stream(i_stream),
+                                output_stream(cout),
+                                keywords(language_specs),
+                                program_data(1),
                                 data_pointer(program_data.begin()),
                                 keyword_regex(generate_key_regex(keywords))
     {}
@@ -94,8 +98,8 @@ inline void interpreter::decrement_data(){
     --*data_pointer;
 }
 
-inline void interpreter::output_data() const{
-    output_stream << *data_pointer;
+inline void interpreter::output_data(){
+    output_stream << *data_pointer << flush;
 }
 
 inline void interpreter::input_data(){
@@ -131,7 +135,7 @@ inline void interpreter::jump_backward(code_point& code,
         for(instruction previous_instruction = 
                 get_previous_instruction(code, begin);
                 !internal_brackets && previous_instruction != JUMP_FORWARD;
-                previous_instruction = get_previous_instruction(code, begin)){
+                previous_instruction=get_previous_instruction(code, begin)){
         
             if (code == begin)
                 throw domain_error("unmatched jump begin");
@@ -149,7 +153,6 @@ inline void interpreter::jump_backward(code_point& code,
 
 script interpreter::read_code(const string &code) const{
     script code_instructions;
-    
     
     const sregex_iterator MATCH_END;
     for(sregex_iterator 
@@ -189,7 +192,7 @@ inline instruction interpreter::get_previous_instruction(
 void interpreter::run(string code){
 
     const script code_instructions = read_code(code);
-
+    
     const code_point  CODE_START = code_instructions.begin();
     const code_point  CODE_END = code_instructions.end();
 
@@ -197,7 +200,7 @@ void interpreter::run(string code){
 
    for(instruction current_instruction = 
                         get_next_instruction(control_point, CODE_END); 
-                control_point != CODE_END;
+                current_instruction != NULL_INSTRUCTION;
                 current_instruction = 
                         get_next_instruction(control_point, CODE_END)){
 
@@ -233,15 +236,17 @@ void interpreter::run(string code){
                 throw logic_error("Unknown instruction");
         }
     } 
+    //std::cerr << *data_pointer << std::endl;
     reset_data();
+    output_stream << endl;
     return;
 }
 
 //TODO fix this mess
 void interpreter::run(istream &code){
-    string source, line;
-    while(getline(code, source))
-        source += line;
+    string source;
+
+    code >> source;
 
     run(source);
     return;
@@ -256,6 +261,6 @@ void interpreter::live_run(){
 }
 
 void interpreter::reset_data(){
-    program_data = data_cells(0);
+    program_data = data_cells(1);
     data_pointer = program_data.begin();
 }
