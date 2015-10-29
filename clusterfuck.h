@@ -56,6 +56,8 @@ private:
                         const _clusterfuck_internals::code_point&) const;
 
     _clusterfuck_internals::script read_code(const std::string &) const;
+    inline instruction get_current_instruction(
+                        const _clusterfuck_internals::code_point&) const;
     inline instruction get_next_instruction(
                         _clusterfuck_internals::code_point &, 
                         const _clusterfuck_internals::code_point&) const;

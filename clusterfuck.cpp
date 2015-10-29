@@ -14,6 +14,7 @@ using namespace clusterfuck;
 using namespace _clusterfuck_internals;
 
 using std::logic_error; using std::domain_error;
+using std::range_error;
 using std::map;         using std::string;
 using std::list;        using std::find;
 using std::regex;       using std::sregex_iterator;
@@ -76,8 +77,9 @@ inline void interpreter::null_instruction(){
 
 inline void interpreter::increment_pointer(){
     if(++data_pointer == program_data.end()){
-        program_data.push_back(0);
-        data_pointer = --program_data.end();
+        program_data.push_back('\0');
+        data_pointer = program_data.end();
+        --data_pointer;
         
     }
     return;
@@ -85,17 +87,20 @@ inline void interpreter::increment_pointer(){
 
 inline void interpreter::decrement_pointer(){
     if(data_pointer == program_data.begin()){
-        program_data.push_front(0);
+        throw range_error("Cannot access data cell before the first");
     }
-    --data_pointer;
+    else{
+        --data_pointer;
+    }
+    return;
 }
 
 inline void interpreter::increment_data(){
-    ++*data_pointer;
+    ++(*data_pointer);
 }
 
 inline void interpreter::decrement_data(){
-    --*data_pointer;
+    --(*data_pointer);
 }
 
 inline void interpreter::output_data(){
@@ -108,10 +113,11 @@ inline void interpreter::input_data(){
 
 inline void interpreter::jump_forward(code_point& code, 
                                       const code_point& end) const{
-    if(*data_pointer){
+    if(!*data_pointer){
         int internal_brackets = 0;
         for(instruction next_instruction = get_next_instruction(code, end);
-                !internal_brackets && next_instruction != JUMP_BACKWARD;
+                (internal_brackets != 0) || 
+                next_instruction != JUMP_BACKWARD;
                 next_instruction = get_next_instruction(code, end)){
         
             if (code == end)
@@ -134,7 +140,8 @@ inline void interpreter::jump_backward(code_point& code,
         int internal_brackets = 0;
         for(instruction previous_instruction = 
                 get_previous_instruction(code, begin);
-                !internal_brackets && previous_instruction != JUMP_FORWARD;
+                (internal_brackets != 0) || 
+                previous_instruction != JUMP_FORWARD;
                 previous_instruction=get_previous_instruction(code, begin)){
         
             if (code == begin)
@@ -148,6 +155,7 @@ inline void interpreter::jump_backward(code_point& code,
             }
         }
     }
+    
     return;
 }
 
@@ -163,13 +171,19 @@ script interpreter::read_code(const string &code) const{
     return code_instructions;
 }
 
+//returns the current instruction at a particular control point
+inline instruction interpreter::get_current_instruction(
+                                    const code_point &control_point) const{
+    return *control_point;
+}
+
 // returns the instruction pf control_point  and then increments on to the
 // next code point, unless control_point == end, in which case the 
 // NULL_INSTRUCTION is returned
 inline instruction interpreter::get_next_instruction(
             code_point &control_point, const code_point &end) const{
-    if(control_point != end){
-        return *(control_point++);
+    if(++control_point != end){
+        return *(control_point);
     }
     else
         return NULL_INSTRUCTION;
@@ -182,7 +196,7 @@ inline instruction interpreter::get_previous_instruction(
             code_point& control_point, const code_point& begining) const{
     
     if(control_point != begining){
-        return *(control_point--);
+        return *(--control_point);
     }
     else
         return NULL_INSTRUCTION;
@@ -199,7 +213,7 @@ void interpreter::run(string code){
     code_point control_point = CODE_START;
 
    for(instruction current_instruction = 
-                        get_next_instruction(control_point, CODE_END); 
+                get_current_instruction(control_point);
                 current_instruction != NULL_INSTRUCTION;
                 current_instruction = 
                         get_next_instruction(control_point, CODE_END)){
@@ -235,6 +249,18 @@ void interpreter::run(string code){
             default:
                 throw logic_error("Unknown instruction");
         }
+            #ifdef DEBUG
+            std::cerr << std::endl << '\t';
+            for(auto a : program_data)
+                std::cerr <<(a < 100 ?( a < 10 ? "  ":" "):"") << (int) a;
+            std::cerr << std::endl << '\t';
+            int i=0;
+            for(auto it = program_data.begin(); it != data_pointer; ++it)
+                ++i;
+            for(int j = 0; j < i; ++j)
+                std::cerr << "   ";
+            std::cerr << " ^" << std::endl;
+            #endif
     } 
     //std::cerr << *data_pointer << std::endl;
     reset_data();
