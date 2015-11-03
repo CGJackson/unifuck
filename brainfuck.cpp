@@ -12,6 +12,7 @@ using namespace clusterfuck;
 
 using std::map;             using std::string;
 using std::ifstream;        using std::runtime_error;
+using std::cerr;            using std::endl;
 
 int main(int argc, char** argv){
     
@@ -32,11 +33,14 @@ int main(int argc, char** argv){
     if(argc > 1){
         for(int i = 1; i < argc; ++i){
             ifstream source_file(argv[i]);
+
             if(source_file){
                 brainfuck_intepreter.run(source_file);
             }
             else
-                throw runtime_error("Unable to open file "+string(argv[i]));
+                cerr << "Unable to open file " << argv[i] << endl;
+
+            source_file.close();
         }
     }    
     else
