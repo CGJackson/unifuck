@@ -247,7 +247,7 @@ void interpreter::run(string code){
                 jump_backward(control_point, CODE_START);
                 break;
             default:
-                throw logic_error("Unknown instruction");
+                throw logic_error("Current instruction not recognised");
         }
             #ifdef DEBUG
             std::cerr << std::endl << '\t';
