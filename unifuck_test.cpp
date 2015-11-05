@@ -1,15 +1,15 @@
-// runs unit tests on clusterfuck interpreter
+// runs unit tests on unifuck interpreter
 
 #include <iostream>
 #include <string>
 #include <map>
 #include <regex>
 
-#include "clusterfuck.h"
-#include "clusterfuck.cpp"
+#include "unifuck.h"
+#include "unifuck.cpp"
 
-using namespace clusterfuck;
-using namespace _clusterfuck_internals;
+using namespace unifuck;
+using namespace _unifuck_internals;
 
 using std::regex;           using std::smatch;
 using std::sregex_iterator;

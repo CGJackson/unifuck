@@ -6,7 +6,7 @@
 #include <iostream>
 #include <regex>
 
-namespace clusterfuck{
+namespace unifuck{
 enum instruction   {NULL_INSTRUCTION, INCREMENT_POINTER, DECREMENT_POINTER,
                     INCREMENT_DATA, DECREMENT_DATA, 
                     OUTPUT_DATA, INPUT_DATA,
@@ -15,17 +15,17 @@ enum instruction   {NULL_INSTRUCTION, INCREMENT_POINTER, DECREMENT_POINTER,
 
 }
 
-namespace _clusterfuck_internals {
+namespace _unifuck_internals {
 
 typedef char cell_data; // The data type used by the program data cells
 typedef std::list<cell_data> data_cells;
 
 
-typedef std::list<clusterfuck::instruction> script;
+typedef std::list<unifuck::instruction> script;
 typedef script::const_iterator code_point;
 }
 
-namespace clusterfuck{
+namespace unifuck{
 class interpreter {
 public:
     // constructs an interpreter for a language spesified as a map from 
@@ -44,8 +44,8 @@ private:
     std::ostream &output_stream = std::cout;
 
     std::map<std::string, instruction> keywords;
-    _clusterfuck_internals::data_cells program_data;
-    _clusterfuck_internals::data_cells::iterator data_pointer;
+    _unifuck_internals::data_cells program_data;
+    _unifuck_internals::data_cells::iterator data_pointer;
 
     void reset_data();
     
@@ -56,20 +56,20 @@ private:
     inline void decrement_data();
     inline void output_data();
     inline void input_data();
-    inline void jump_forward(_clusterfuck_internals::code_point&,
-                        const _clusterfuck_internals::code_point&) const;
-    inline void jump_backward(_clusterfuck_internals::code_point&, 
-                        const _clusterfuck_internals::code_point&) const;
+    inline void jump_forward(_unifuck_internals::code_point&,
+                        const _unifuck_internals::code_point&) const;
+    inline void jump_backward(_unifuck_internals::code_point&, 
+                        const _unifuck_internals::code_point&) const;
 
-    _clusterfuck_internals::script read_code(const std::string &) const;
+    _unifuck_internals::script read_code(const std::string &) const;
     inline instruction get_current_instruction(
-                        const _clusterfuck_internals::code_point&) const;
+                        const _unifuck_internals::code_point&) const;
     inline instruction get_next_instruction(
-                        _clusterfuck_internals::code_point &, 
-                        const _clusterfuck_internals::code_point&) const;
+                        _unifuck_internals::code_point &, 
+                        const _unifuck_internals::code_point&) const;
     inline instruction get_previous_instruction(
-                        _clusterfuck_internals::code_point&, 
-                        const _clusterfuck_internals::code_point&) const;
+                        _unifuck_internals::code_point&, 
+                        const _unifuck_internals::code_point&) const;
     const std::regex keyword_regex;
 };
 

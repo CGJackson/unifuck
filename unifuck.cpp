@@ -8,10 +8,10 @@
 #include <stdexcept>
 #include <regex>
 
-#include "clusterfuck.h"
+#include "unifuck.h"
 
-using namespace clusterfuck;
-using namespace _clusterfuck_internals;
+using namespace unifuck;
+using namespace _unifuck_internals;
 
 using std::logic_error; using std::domain_error;
 using std::range_error;

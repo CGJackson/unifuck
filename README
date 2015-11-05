@@ -4,4 +4,4 @@ Examples of synonyms for brainfuck are Ook!, Blub and COW.
 
 The interpreter can be run from a source file or as an interactive prompt. 
 
-Source code is provided for interpreters for brainfuck and Ook! using clusterfuck. 
+Source code is provided for interpreters for brainfuck and Ook! using unifuck. 

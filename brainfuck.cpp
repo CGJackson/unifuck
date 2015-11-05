@@ -1,6 +1,6 @@
-// A brainfuck interpreter written using clusterfuck
+// A brainfuck interpreter written using unifuck
 
-#include "clusterfuck.h"
+#include "unifuck.h"
 
 #include <map>
 #include <string>
@@ -8,7 +8,7 @@
 #include <fstream>
 #include <stdexcept>
 
-using namespace clusterfuck;
+using namespace unifuck;
 
 using std::map;             using std::string;
 using std::ifstream;        using std::runtime_error;
