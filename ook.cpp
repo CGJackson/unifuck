@@ -35,7 +35,13 @@ int main(int argc, char** argv){
             ifstream source_file(argv[i]);
 
             if(source_file){
-                ook_intepreter.run(source_file);
+                try{
+                    ook_intepreter.run(source_file);
+                }
+                catch( std::exception& e) {
+                    cerr << "Error:\n" << e.what() << endl;
+                    return 1;
+                }
             }
             else
                 cerr << "Unable to open file " << argv[i] << endl;
@@ -44,7 +50,13 @@ int main(int argc, char** argv){
         }
     }    
     else
-        ook_intepreter.live_run();
+        try{
+            ook_intepreter.live_run();
+        }
+        catch (std::exception& e){
+            cerr << "Error:\n" << e.what() << endl;
+            return 1;
+        }
 
     return 0;
 }

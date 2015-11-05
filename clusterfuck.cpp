@@ -21,7 +21,7 @@ using std::regex;       using std::sregex_iterator;
 using std::cin;         using std::cout;
 using std::getline;     using std::istream;
 using std::ostream;     using std::flush;
-using std::endl;
+using std::endl;        using std::cerr;
 
 
 // Takes a string and adds escapes to regex special characters, so that it
@@ -54,7 +54,7 @@ regex generate_key_regex(const map<string, mapped_type> &key_map){
         if(++it != key_patterns.end())
             pattern += "|";
     }
-
+    
     return regex(pattern);
 }
 
@@ -207,6 +207,10 @@ void interpreter::run(string code){
 
     const script code_instructions = read_code(code);
     
+    if( code_instructions.size() == 0){
+        throw domain_error("Source code was empty");
+    }
+
     const code_point  CODE_START = code_instructions.begin();
     const code_point  CODE_END = code_instructions.end();
 
@@ -270,10 +274,10 @@ void interpreter::run(string code){
 
 //TODO fix this mess
 void interpreter::run(istream &code){
-    string source;
-
-    code >> source;
-
+    string source, line;
+    while(getline(code, line))
+        source += line;
+    
     run(source);
     return;
 }
