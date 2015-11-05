@@ -58,7 +58,8 @@ regex generate_key_regex(const map<string, mapped_type> &key_map){
     return regex(pattern);
 }
 
-
+// interpreter constructer getting the language spesifications from a map
+// sending keywords to instructions
 interpreter::interpreter(map<string,instruction> language_specs, 
                                 istream &i_stream,
                                 ostream &o_stream): 
@@ -159,6 +160,8 @@ inline void interpreter::jump_backward(code_point& code,
     return;
 }
 
+// reads through a source code and returns the corrisponding instructions,
+// ignoring everything else as comment
 script interpreter::read_code(const string &code) const{
     script code_instructions;
     
@@ -202,7 +205,7 @@ inline instruction interpreter::get_previous_instruction(
         return NULL_INSTRUCTION;
 }
 
-
+// executes source code contained in string code
 void interpreter::run(string code){
 
     const script code_instructions = read_code(code);
@@ -272,7 +275,7 @@ void interpreter::run(string code){
     return;
 }
 
-//TODO fix this mess
+// runs code fro an input stream
 void interpreter::run(istream &code){
     string source, line;
     while(getline(code, line))
@@ -290,6 +293,8 @@ void interpreter::live_run(){
     return;
 }
 
+// resets the state of the interpreter to its inital states 
+//so that another program can be executed
 void interpreter::reset_data(){
     program_data = data_cells(1);
     data_pointer = program_data.begin();
