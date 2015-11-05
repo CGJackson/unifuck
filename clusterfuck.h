@@ -17,7 +17,7 @@ enum instruction   {NULL_INSTRUCTION, INCREMENT_POINTER, DECREMENT_POINTER,
 
 namespace _clusterfuck_internals {
 
-typedef char cell_data;
+typedef char cell_data; // The data type used by the program data cells
 typedef std::list<cell_data> data_cells;
 
 
@@ -28,10 +28,16 @@ typedef script::const_iterator code_point;
 namespace clusterfuck{
 class interpreter {
 public:
+    // constructs an interpreter for a language spesified as a map from 
+    // keywords to instructions. An istream and/or stream can also be
+    // spesified to be used for the language's io operations, using
+    // stdin and stdout by default
     interpreter(std::map<std::string,instruction>, std::istream& = std::cin,
                                            std::ostream& = std::cout);
+    // reads and runs source code given as either an string or input stream
     void run(std::istream &);
     void run(std::string);
+    // runs the interpreter as an interactive prompt
     void live_run();
 private:
     std::istream &input_stream;
